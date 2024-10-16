@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gluten-Free Cooking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Paste the provided CSS here */
+        body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+nav {
+    background-color: #4CAF50;
+    padding: 15px;
+    text-align: center;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 20px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+nav a:hover {
+    color: #ffcc00;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 2.2rem;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+}
+
+p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    text-align: justify;
+    margin-bottom: 20px;
+}
+
+ul {
+    padding-left: 0;
+    list-style-type: none;
+}
+
+ul li {
+    background-color: #4CAF50;
+    color: white;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+ul li:before {
+    content: "✓";
+    margin-right: 10px;
+    color: #ffcc00;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+footer a {
+    color: #ffcc00;
+    text-decoration: none;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 30px;
+    background-color: #ffcc00;
+    color: #333;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #ffcc00;
+    color: #fff;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="{% url "home" %}">Home</a>
+        {% comment %} <a href="{% url "home" %}">Gluten-Free Cooking</a> {% endcomment %}
+        <!-- Add more links as needed -->
+    </nav>
+
+    <div class="container mt-5">
+        <h1>Gluten-Free Cooking</h1>
+        <p>Welcome to our gluten-free cooking guide! While we currently don't have dedicated gluten-free recipes, here are some tips and alternatives for gluten-free cooking:</p>
+        <ul>
+            <li>Use gluten-free grains like quinoa, rice, or millet.</li>
+            <li>Experiment with gluten-free flours such as almond flour, coconut flour, or gluten-free all-purpose flour.</li>
+            <li>Substitute traditional pasta with zucchini noodles or gluten-free pasta.</li>
+            <li>Incorporate plenty of fresh vegetables, fruits, and proteins.</li>
+            <li>Read labels carefully to avoid hidden gluten in processed foods.</li>
+        </ul>
+        <p>Stay tuned for more recipes and tips!</p>
+        {% comment %} <a href="#" class="btn">Get Started</a> {% endcomment %}
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Your Website. All rights reserved. <a href="">Contact us</a></p>
+    </footer>
+
+</body>
+</html>

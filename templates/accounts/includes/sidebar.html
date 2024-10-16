@@ -1,0 +1,9 @@
+<div class="myblog-sidebar">
+    <h2>My Profile</h2>
+    <a href="{% url "my_profile" request.user.id %}" class="list-group-item{% if 'my_profile' in request.path  %} active{% endif %}">My Profie</a>
+    <a href="{% url "my_post" %}" class="list-group-item{% if 'my_post' in request.path  %} active{% endif %}">My Posts</a>
+    <a href="{% url "saved_post" request.user.id %}" class="list-group-item{% if 'saved_post' in request.path  %} active{% endif %}">Saved Posts</a>
+    <a href="{% url "my_comments" %}" class="list-group-item{% if 'my_comments' in request.path  %} active{% endif %}">My Comments</a>
+    <a href="{% url "my_rating" %}" class="list-group-item{% if 'my_rating' in request.path  %} active{% endif %}">My Rating</a>
+    <a href="{% url "edit_profile" %}" class="list-group-item{% if 'edit_profile' in request.path  %} active{% endif %}">Edit Profile</a>
+</div>

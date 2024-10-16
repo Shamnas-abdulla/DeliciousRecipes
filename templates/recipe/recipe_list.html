@@ -1,0 +1,308 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block styles %}
+<style>
+    .small-recipe-area {
+        padding-top: 40px;
+    }
+    
+    .single-small-recipe-area {
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+    }
+    
+    .single-small-recipe-area:hover {
+        transform: translateY(-5px);
+    }
+    
+    .recipe-thumb img {
+        width: 100%;
+        height: auto;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+    
+    .recipe-content {
+        padding: 15px;
+    }
+
+    .recipe-content h5 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 10px 0;
+    }
+
+    .recipe-content p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .recipe-content span {
+        display: block;
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 5px;
+    }
+
+    .recipes i {
+        color: #ffc107;
+        font-size: 14px;
+        margin-right: 2px;
+    }
+
+    .filter-form {
+        background-color: #f8f9fa;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar {
+        max-width: 500px; /* Set a max width for the filter section */
+    }
+    .filter-form {
+        background-color: #f8f9fa; /* Light background for the form */
+        border: 1px solid #dee2e6; /* Border color */
+        border-radius: 10px; /* Rounded corners */
+    }
+    
+    .form-label {
+        font-weight: bold; /* Bold labels */
+        color: #333; /* Darker label color */
+    }
+
+    .form-select {
+        border-radius: 5px; /* Rounded select box */
+        border: 1px solid #ced4da; /* Light border */
+        transition: border-color 0.3s; /* Transition effect for border color */
+    }
+
+    .form-select:focus {
+        border-color: #28a745; /* Change border color on focus */
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* Shadow effect on focus */
+    }
+
+    .form-check-input {
+        border-radius: 5px; /* Rounded checkbox */
+    }
+
+    .btn-success {
+        background-color: #28a745; /* Success button color */
+        border-color: #28a745; /* Button border color */
+    }
+
+    .btn-success:hover {
+        background-color: #218838; /* Darker green on hover */
+        border-color: #1e7e34; /* Darker border on hover */
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .sidebar {
+            margin-top: 20px; /* Space on smaller screens */
+        }
+    }
+    .rating-star ul {
+        padding: 0;
+        list-style: none;
+    }
+    
+    .rating-star .fa-star {
+        font-size: 25px; /* Adjust the size as needed (e.g., 30px for larger stars) */
+        color: gold; /* Color for filled stars */
+    }
+    
+    .rating-star .fa-star-o {
+        font-size: 25px; /* Ensure the unfilled stars are the same size */
+        color: lightgray; /* Color for unfilled stars */
+    }
+    
+    .rating-star .fa-star-half-o {
+        font-size: 25px; /* Size for half-filled stars */
+        color: gold; /* Same color for half-filled stars */
+    }
+    .search-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .search-bar input[type="search"] {
+        flex: 1;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: 1px solid #ced4da;
+        border-radius: 10px;
+        outline: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, white, #f9f9f9);
+        color: #495057;
+    }
+
+    .search-bar input[type="search"]::placeholder {
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .search-bar input[type="search"]:focus {
+        border-color: #28a745;
+        background: white;
+        box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+    }
+
+    .search-bar button {
+        /* padding: 12px 20px; */
+        font-size: 16px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        margin-left: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar button:hover {
+        background-color: #218838;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-result-heading {
+        text-align: center;
+        font-style: italic;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-top: 20px;
+        margin-bottom: 30px;
+        background-color: rgb(255, 255, 255);
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock styles %}
+
+{% block body %}
+<div class="container mt-3">
+    <div class="container mt-3">
+        <!-- Receipe Post Search -->
+        <div class="receipe-post-search mb-80">
+            <div class="search-bar">
+                <form action="{% url "search" %}" method="get" style="display: flex; width: 100%;">
+                    <input type="search" name="keyword" placeholder="Search Recipes">
+                    <button type="submit" class="btn delicious-btn">Search</button>
+                </form>
+            </div>
+        </div>
+    
+        {% if 'search' in request.path and keyword %}
+        <h4 class="search-result-heading">You are seeing results based on this '{{ keyword }}' keyword</h4>
+        {% endif %}
+    </div>    
+    
+
+    <h2 class="text-center mb-4">Recipies</h2>
+    <div class="row mb-4">
+        <div class="col-md-4 sidebar">
+            <h4 class="ms-5" style="margin-left: 20px;">Add Filter</h4>
+
+            <form method="get" action="{% url 'filter_recipe' %}" class="filter-form p-4 border rounded shadow-sm bg-light">
+                <div class="row mb-3">
+                    <!-- Recipe Type Filter -->
+                    <div class="col-md-12 mb-2">
+                        <label for="filter_recipe_type" class="form-label">Recipe Type</label>
+                        <select class="form-select" name="filter_recipe_type" id="filter_recipe_type">
+                            <option value="">Select Type</option>
+                            <option value="Veg" {% if request.GET.filter_recipe_type == 'Veg' %}selected{% endif %}>Vegetarian</option>
+                            <option value="Non-Veg" {% if request.GET.filter_recipe_type == 'Non-Veg' %}selected{% endif %}>Non-Vegetarian</option>
+                            <option value="Pescatarian" {% if request.GET.filter_recipe_type == 'Pescatarian' %}selected{% endif %}>Pescatarian</option>
+                        </select>
+                    </div>
+        
+                    <!-- Category Filter -->
+                    <div class="col-md-12 mb-2">
+                        <label for="filter_category" class="form-label">Category</label>
+                        <select class="form-select" name="filter_category" id="filter_category">
+                            <option value="">Select Category</option>
+                            {% for category in categories %}
+                            <option value="{{ category.slug }}" {% if request.GET.filter_category == category.slug %}selected{% endif %}>{{ category.category_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+        
+                <!-- Most Rated Filter -->
+                <div class="form-check mb-3 stylish-checkbox">
+                    <input class="form-check-input" type="checkbox" name="most_rated" id="most_rated" value="true" {% if request.GET.most_rated %}checked{% endif %}>
+                    <label class="form-check-label" for="most_rated">Show Most Rated Recipes</label>
+                </div>
+        
+                <!-- Filter Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success" style="width: 100%; padding: 10px; transition: background-color 0.3s;">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ##### Small Recipe Area Start ##### -->
+        <div class="col-md-8">
+            <section class="small-recipe-area">
+                <div class="row">
+                    {% for recipe in recipies %}
+                    <!-- Recipe Card -->
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="single-small-recipe-area" style="padding:10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); overflow: hidden; margin-bottom: 20px; transition: transform 0.2s ease;">
+                            <!-- Recipe Thumb -->
+                            <div class="recipe-thumb" style="height: 150px; overflow: hidden;">
+                                <a href="{% url 'recipe_detail' recipe.id %}">
+                                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                </a>
+                            </div>
+                            
+                            <!-- Recipe Content -->
+                            <div class="recipe-content" style="padding: 10px;">
+                                <span style="font-size: 12px; color: #888;">{{ recipe.created_at }}</span>
+                                <a href="{% url 'recipe_detail' recipe.id %}" style="text-decoration: none; color: #333;">
+                                    <h5 style="font-size: 16px; margin: 5px 0;">{{ recipe.title }}</h5>
+                                </a>
+                                <!-- recipes -->
+                                <div class="recipes" style="font-size: 12px; color: #ffc107;">
+                                    <div class="rating-star">
+                                        <span>
+                                            <ul class="list-inline">
+                                                <li class="fa fa-star{% if recipe.rating_avg < 0.5 %}-o{% elif user_rating and user_rating.rate >= 0.5 and recipe.rating_avg < 1 %}-half-o{% endif %}"></li>
+                                                <li class="fa fa-star{% if recipe.rating_avg < 1.5 %}-o{% elif user_rating and user_rating.rate >= 1.5 and recipe.rating_avg < 2 %}-half-o{% endif %}"></li>
+                                                <li class="fa fa-star{% if recipe.rating_avg < 2.5 %}-o{% elif user_rating and user_rating.rate >= 2.5 and recipe.rating_avg < 3 %}-half-o{% endif %}"></li>
+                                                <li class="fa fa-star{% if recipe.rating_avg < 3.5 %}-o{% elif user_rating and user_rating.rate >= 3.5 and recipe.rating_avg < 4 %}-half-o{% endif %}"></li>
+                                                <li class="fa fa-star{% if recipe.rating_avg < 4.5 %}-o{% elif user_rating and user_rating.rate >= 4.5 and recipe.rating_avg < 5 %}-half-o{% endif %}"></li>
+                                            </ul>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- Category & Type -->
+                                <p style="font-size: 12px; margin: 3px 0;"><strong>Category:</strong> {{ recipe.category }}</p>
+                                <p style="font-size: 12px; margin: 3px 0;"><strong>Recipe Type:</strong> {{ recipe.recipe_type }}</p>
+                                
+                                <!-- Comments -->
+                                <p style="font-size: 12px; color: #888; margin: 5px 0;">Comments: {{recipe.comment_count}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+        <!-- ##### Small Recipe Area End ##### -->
+    </div>
+</div>
+{% endblock body %}

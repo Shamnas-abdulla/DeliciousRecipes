@@ -1,0 +1,237 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static "css/custom.css" %}">
+<style>
+    /* Basic styles for layout */
+    .myblog-body {
+        display: flex;
+        flex-direction: column;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+
+    .myblog-container {
+        display: flex;
+        width: 100%;
+        max-width: 1200px;
+        margin: auto;
+        flex: 1;
+    }
+
+    .myblog-sidebar {
+        width: 250px;
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-right: 20px;
+    }
+
+    .myblog-content {
+        flex: 1;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        margin: 5px 0;
+    }
+
+    .form-control {
+        height: auto; /* Remove default height */
+        padding: 10px; /* Adjust padding */
+        line-height: normal; /* Adjust line-height */
+        min-height: 38px; /* Adjust as necessary */
+        border: 1px solid #ccc; /* Add border for input fields */
+        border-radius: 5px; /* Add border radius for rounded corners */
+    }
+
+    /* Additional custom styles for submit and button */
+    button[type="submit"],
+    #addIngredientBtn {
+        background-color: #7ed321;
+        color: white;
+        padding: 3px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 16px;
+        margin-top: 10px; /* Add margin for better spacing */
+    }
+
+    button[type="submit"]:hover,
+    #addIngredientBtn:hover {
+        background-color: #5ba914;
+    }
+
+    .remove-btn {
+        background-color: transparent;
+        border: none;
+        color: red;
+        font-size: 20px; /* Adjust size for better visibility */
+        cursor: pointer;
+    }
+
+    .ingredient-list li {
+        background-color: #eef2f3;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+{% endblock styles %}
+
+{% block body %}
+<div class="recipe-post-area section-padding-80">
+    <div class="row">
+        <div class="col-12">
+            <div class="section-heading">
+                <h3>Create a Recipe Post</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="contact-form-area">
+                <form action="{% url 'create_recipe' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="row">
+                        <!-- Recipe Title -->
+                        <div class="col-12 col-lg-6 mb-3">
+                            {{ form.title.label_tag }}
+                            <input type="text" class="form-control" id="id_title" name="title" value="{{ form.title.value|default:'' }}" placeholder="Recipe Title" required>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-12 mb-3">
+                            {{ form.description.label_tag }}
+                            <textarea class="form-control" id="id_description" name="description" placeholder="Description" required>{{ form.description.value|default:'' }}</textarea>
+                        </div>
+
+                        <!-- Ingredients -->
+                        <div class="col-12 mb-3">
+                            <input type="text" class="form-control" id="ingredientInput" placeholder="Enter an ingredient">
+                            <button type="button" id="addIngredientBtn" class="btn btn-primary">Add Ingredient</button>
+                        </div>
+
+                        <!-- Ingredients List -->
+                        <div class="col-12 mb-3">
+                            <ul id="ingredientList" class="ingredient-list"></ul>
+                            <input type="hidden" name="ingredients" id="hiddenIngredientList">
+                        </div>
+
+                        <!-- Cooking Steps -->
+                        <div class="col-12 mb-3">
+                            {{ form.instructions.label_tag }}
+                            <textarea class="form-control" id="id_instructions" name="instructions" placeholder="Steps, Seperate Each Steps Using Comma's" required>{{ form.instructions.value|default:'' }}</textarea>
+                        </div>
+
+                        <!-- Cooking Time -->
+                        <div class="col-12 col-lg-6 mb-3">
+                            {{ form.cooking_time.label_tag }}
+                            <input type="number" class="form-control" id="id_cooking_time" name="cooking_time" value="{{ form.cooking_time.value|default:'' }}" min="1" placeholder="Cooking Time (in minutes)" required>
+                        </div>
+                        <!-- Servings -->
+                        <div class="col-12 col-lg-6 mb-3">
+                            {{ form.servings.label_tag }}
+                            <input type="text" class="form-control" id="id_servings" name="servings" value="{{ form.servings.value|default:'' }}" placeholder="Servings" required>
+                        </div>
+
+                        <!-- Recipe Type -->
+                        <div class="col-12 mb-3">
+                            {{ form.recipe_type.label_tag }}
+                            <select class="form-control" name="recipe_type" required>
+                                {% for choice in form.recipe_type.field.choices %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == form.recipe_type.value %}selected{% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+
+                        <!-- Category -->
+                        <div class="col-12 mb-3">
+                            {{ form.category.label_tag }}
+                            <select class="form-control" name="category" required>
+                                {% for choice in form.category.field.choices %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == form.category.value %}selected{% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                    
+                        </div>
+                        <!-- Image Upload -->
+                        <div class="col-12 mb-3">
+                            {{ form.image.label_tag }}
+                            <input type="file" class="form-control" id="id_image" name="image" required>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-12 text-center">
+                            <button class="btn delicious-btn mt-30" type="submit">Submit Recipe</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
+{% block jslinks %}
+<script>
+    document.getElementById("addIngredientBtn").addEventListener("click", function() {
+        const ingredientInput = document.getElementById("ingredientInput");
+        const ingredient = ingredientInput.value.trim();
+
+        if (ingredient !== "") {
+            const ingredientList = document.getElementById("ingredientList");
+
+            // Create a new list item
+            const listItem = document.createElement("li");
+            listItem.textContent = ingredient;
+
+            // Create a remove button (cross symbol)
+            const removeBtn = document.createElement("button");
+            removeBtn.innerHTML = "&times;"; // Cross symbol
+            removeBtn.classList.add("remove-btn");
+            removeBtn.onclick = function() {
+                ingredientList.removeChild(listItem);
+                updateHiddenIngredients(); // Update hidden input when an ingredient is removed
+            };
+
+            // Append the remove button to the list item
+            listItem.appendChild(removeBtn);
+
+            // Add the new ingredient to the list
+            ingredientList.appendChild(listItem);
+            ingredientInput.value = ""; // Clear the input field
+
+            updateHiddenIngredients(); // Update hidden input when a new ingredient is added
+        }
+    });
+
+    // Function to update the hidden ingredient list input
+    function updateHiddenIngredients() {
+        const hiddenIngredientInput = document.getElementById("hiddenIngredientList");
+        const ingredients = Array.from(document.getElementById("ingredientList").children)
+            .map(li => li.textContent.replace("×", "").trim()); // Remove the cross symbol
+        hiddenIngredientInput.value = ingredients.join(", ");
+    }
+</script>
+{% endblock jslinks %}

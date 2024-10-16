@@ -1,0 +1,437 @@
+{% extends "includes/base.html" %}
+
+{% block styles %}
+<style>
+.single-comment {
+    transition: transform 0.2s ease;
+}
+
+.single-comment:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+}
+
+.comment-author img {
+    border: 2px solid #ddd;
+}
+
+.comment-content h5 {
+    font-size: 1.1rem;
+}
+
+.comment-content h6 {
+    font-size: 1rem;
+    color: #007bff; /* Optional color for titles */
+}
+
+.comment-content p {
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+
+
+/* Hide radio button */
+.rate > input {
+    display: none;
+}
+
+.rate {
+    display: inline-block;
+    border: 0;
+}
+
+.rate > label {
+    float: right;
+}
+
+/* Showing the stars */
+.rate > label:before {
+    display: inline-block;
+    font-size: 23px;
+    font-family: FontAwesome;
+    content: "\f005";
+    margin: 0;
+    padding: 0.3rem 0.2rem;
+    cursor: pointer;
+}
+
+/* Half stars */
+.rate .half:before {
+    content: "\f089";
+    position: absolute;
+    padding-right: 0;
+}
+
+/* Click and hover */
+input:checked ~ label, label:hover ~ label {
+    color: #ffb503;
+}
+
+/* hover highlight */
+input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:hover ~ label,
+label:hover ~ input:checked ~ label {
+    color: #cc9000;
+}
+
+.rating-star li{
+    color: #cc9000 !important;
+}
+
+ul.thumb{
+    margin: 0 auto;
+    padding: 0;
+    float: left;
+}
+ul.thumb li{
+    list-style: none;
+    margin: 10px;
+}
+ul.thumb li img{
+    width: 80px;
+    height: 80px;
+    border: 1px solid grey;
+}
+.rating-star ul {
+    padding: 0;
+    list-style: none;
+}
+
+.rating-star .fa-star {
+    font-size: 25px; /* Adjust the size as needed (e.g., 30px for larger stars) */
+    color: gold; /* Color for filled stars */
+}
+
+.rating-star .fa-star-o {
+    font-size: 25px; /* Ensure the unfilled stars are the same size */
+    color: lightgray; /* Color for unfilled stars */
+}
+
+.rating-star .fa-star-half-o {
+    font-size: 25px; /* Size for half-filled stars */
+    color: gold; /* Same color for half-filled stars */
+}
+
+.recipe-type {
+    display: inline-block;
+    margin: 5px; /* Add some spacing between recipe types */
+}
+
+.recipe-type {
+    display: inline-block;
+    margin: 5px; /* Add spacing between recipe types */
+}
+
+.label {
+    padding: 10px 15px; /* Padding for a better look */
+    border-radius: 5px; /* Round corners */
+    font-weight: bold; /* Bold text */
+    text-transform: uppercase; /* Uppercase text */
+    color: white !important; /* Default text color */
+}
+
+.label-success {
+    background-color: #28a745; /* Green for vegetarian */
+}
+
+.label-info {
+    background-color: #17a2b8; /* Blue for pescatarian */
+}
+
+.label-danger {
+    background-color: #dc3545; /* Red for other types */
+}
+
+.btn-large {
+    padding: 15px 30px; /* Adjust padding for size */
+    font-size: 18px; /* Adjust font size */
+}
+
+.image-area {
+    height: 300px; /* Same height as the breadcrumb */
+    overflow: hidden; /* Ensures the image does not overflow */
+}
+
+.recipe-image {
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    object-fit: cover; /* Maintains aspect ratio and fills the area */
+    object-position: center; /* Centers the image */
+}
+
+
+
+
+
+
+</style>
+
+<!-- You can add custom styles for the recipe page here -->
+{% endblock styles %}
+
+{% block body %}
+<div class="container">
+    <div class="image-area">
+        <img src="{{ recipe.image.url }}" alt="Recipe Image" class="recipe-image">
+    </div>
+</div>
+
+
+    
+    
+
+    
+    <!-- Save Button -->
+    <div class="container text-center mt-50">
+        <div class="ms-10">
+            {% if recipe.user != request.user %}
+            {% if favorite %}
+            <a href="{% url "save_recipe" recipe.id %}" type="submit" class="btn btn-danger btn-large">Unsave Recipe</a>
+            {% else %}
+            <a href="{% url "save_recipe" recipe.id %}" type="submit" class="btn btn-success btn-large">Save Recipe</a>
+            {% endif %}
+            {% endif %}
+            <a href="{% url "recipe_list" %}" class="btn btn-success btn-large">Back to all recipes</a>
+        </div>
+    </div>
+    
+    
+
+    <div class="receipe-post-area section-padding-80">
+
+        {% comment %} <!-- Receipe Post Search -->
+        <div class="receipe-post-search mb-80">
+            <div class="container">
+                <form action="#" method="post">
+                    <div class="row">
+                        <!-- Dropdowns for categories and search field can be customized if necessary -->
+                        <div class="col-12 col-lg-3">
+                            <select name="category" id="category">
+                                <option value="">{{ recipe.category.name }}</option>
+                                <!-- Add more categories dynamically if needed -->
+                            </select>
+                        </div>
+                        <div class="col-12 col-lg-3">
+                            <input type="search" name="search" placeholder="Search Recipes">
+                        </div>
+                        <div class="col-12 col-lg-3 text-right">
+                            <button type="submit" class="btn delicious-btn">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> {% endcomment %}
+
+        <!-- Receipe Content Area -->
+        <div class="receipe-content-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-md-8">
+                        <div class="receipe-headline my-5">
+                            {% if recipe.user == request.user %}
+                            <h2>Author: You</h2>
+                            {% else %}
+                            <h2>Author: {{ recipe.user.full_name }}</h2>
+
+                            {% endif %}
+                            
+                            <h2>Title :{{ recipe.title }}</h2>
+
+                            <p style="color:black">{{ recipe.description }}</p>
+                            
+                            <div class="receipe-duration">
+                                <h6>Prep: {{ recipe.cooking_time }} mins</h6>
+                                <h6>Yields: {{ recipe.servings }} Servings</h6>
+                                <div class="recipe-type">
+                                    {% if recipe.get_recipe_type_display == 'Vegetarian' %}
+                                        <span class="label label-success">{{ recipe.get_recipe_type_display }}</span>
+                                    {% elif recipe.get_recipe_type_display == 'Pescatarian' %}
+                                        <span class="label label-info">{{ recipe.get_recipe_type_display }}</span>
+                                    {% else %}
+                                        <span class="label label-danger">{{ recipe.get_recipe_type_display }}</span>
+                                    {% endif %}
+                                </div>
+                                <span>{{ recipe.created_at|date:"F d, Y" }}</span>
+                                
+                                
+                                
+                    
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 col-md-4">
+                        <div class="receipe-ratings text-right my-5">
+                            <form action="{% url 'rating' recipe.id %}" method="post">
+                                {% csrf_token %}
+                                <h5>
+                                    {% if user_rating %}
+                                        Your rating:
+                                        {{ user_rating.rate }}
+                                </h5>
+                                <div class="rating-star">
+                                    <span>
+                                        <ul class="list-inline">
+                                            <li class="fa fa-star{% if user_rating and user_rating.rate < 0.5 %}-o{% elif user_rating and user_rating.rate >= 0.5 and user_rating.rate < 1 %}-half-o {% endif %}"></li>
+                                            <li class="fa fa-star{% if user_rating and user_rating.rate < 1.5 %}-o{% elif user_rating and user_rating.rate >= 1.5 and user_rating.rate < 2 %}-half-o {% endif %}"></li>
+                                            <li class="fa fa-star{% if user_rating and user_rating.rate < 2.5 %}-o{% elif user_rating and user_rating.rate >= 2.5 and user_rating.rate < 3 %}-half-o {% endif %}"></li>
+                                            <li class="fa fa-star{% if user_rating and user_rating.rate < 3.5 %}-o{% elif user_rating and user_rating.rate >= 3.5 and user_rating.rate < 4 %}-half-o {% endif %}"></li>
+                                            <li class="fa fa-star{% if user_rating and user_rating.rate < 4.5 %}-o{% elif user_rating and user_rating.rate >= 4.5 and user_rating.rate < 5 %}-half-o {% endif %}"></li>
+                                        </ul>
+                                        
+                                    </span>
+                                </div>
+                                {% else %}
+                                        How do you rate this recipe?
+                                    {% endif %}
+                    
+                                <div>
+                                    <!-- Rating-stars for input -->
+                                    <div class="rate">
+                                        
+                                        <input type="radio" name="rating" id="rating10" value="5" {% if user_rating and user_rating.rate|floatformat:1 == 5 %} checked {% endif %} required>
+                                        <label for="rating10" title="5"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating9" value="4.5" {% if user_rating and user_rating.rate|floatformat:1 == 4.5 %} checked {% endif %} required>
+                                        <label for="rating9" title="4.5" class="half"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating8" value="4" {% if user_rating and user_rating.rate|floatformat:1 == 4 %} checked {% endif %} required>
+                                        <label for="rating8" title="4"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating7" value="3.5" {% if user_rating and user_rating.rate|floatformat:1 == 3.5 %} checked {% endif %} required>
+                                        <label for="rating7" title="3.5" class="half"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating6" value="3" {% if user_rating and user_rating.rate|floatformat:1 == 3 %} checked {% endif %} required>
+                                        <label for="rating6" title="3"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating5" value="2.5" {% if user_rating and user_rating.rate|floatformat:1 == 2.5 %} checked {% endif %} required>
+                                        <label for="rating5" title="2.5" class="half"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating4" value="2" {% if user_rating and user_rating.rate|floatformat:1 == 2 %} checked {% endif %} required>
+                                        <label for="rating4" title="2"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating3" value="1.5" {% if user_rating and user_rating.rate|floatformat:1 == 1.5 %} checked {% endif %} required>
+                                        <label for="rating3" title="1.5" class="half"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating2" value="1" {% if user_rating and user_rating.rate|floatformat:1 == 1 %} checked {% endif %} required>
+                                        <label for="rating2" title="1"></label>
+                                        
+                                        <input type="radio" name="rating" id="rating1" value="0.5" {% if user_rating and user_rating.rate|floatformat:1 == 0.5 %} checked {% endif %} required>
+                                        <label for="rating1" title="0.5" class="half"></label>
+                                    </div>
+                                    <br>
+                                </div>
+                                {% if user_rating %}
+                                <input type="submit" class="btn btn-success" value="Change Rating">
+                                {% else %}
+                                <input type="submit" class="btn btn-success" value="Submit Rating">
+    
+                                {% endif %}
+                                </form>
+                            
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+
+
+                <div class="row">
+                    <div class="col-12 col-lg-8">
+                        <!-- Loop through preparation steps -->
+                        {% for step in instr_list %}
+                        <div class="single-preparation-step d-flex">
+                            <h4>{{ forloop.counter|add:0 }}.</h4>
+                            <p>{{ step }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Ingredients -->
+                    <div class="col-12 col-lg-4">
+                        <div class="ingredients">
+                            <h4>Ingredients</h4>
+                            <!-- Loop through ingredients -->
+                            {% for ingredient in ingr_list %}
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck{{ forloop.counter }}">
+                                <label class="custom-control-label" for="customCheck{{ forloop.counter }}">{{ ingredient }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comment Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="section-heading text-left mb-3">
+                            <h3>Leave a comment</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="contact-form-area">
+                          
+                            <form action="{% url "comment_save" recipe.id%}" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-12">
+                                        <input type="text" name="subject" class="form-control" id="subject" placeholder="Subject">
+                                    </div>
+                                    <div class="col-12">
+                                        <textarea name="content" class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn delicious-btn mt-30" type="submit">Post Comments</button>
+                                    </div>
+                                </div>
+                            </form>
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="section-heading text-left mb-4">
+                            <h3 class="font-weight-bold">Comments</h3>
+                            <hr class="w-50">
+                        </div>
+                    </div>
+                
+                    {% if comments %}
+                        {% for comment in comments %}
+                        <div class="single-comment d-flex align-items-center mb-4 p-3 border rounded shadow-sm bg-light" style="height: auto; width: 100%; max-width: 800px;">
+                            <!-- Author Avatar -->
+                            <div class="comment-author mr-3">
+                                {% if comment.user.photo %}
+                                <img src="{{ comment.user.photo.url }}" alt="User Avatar" class="rounded-circle" width="50" height="50">
+                                {% else %}
+                                <img src="https://via.placeholder.com/50" alt="User Avatar" class="rounded-circle" width="50" height="50">
+                                {% endif %}
+                            </div>
+                
+                            <!-- Comment Content -->
+                            <div class="comment-content" style="flex-grow: 1; word-wrap: break-word; max-width: 700px;">
+                                <h5 class="mb-1" style="margin: 0; line-height: 1.2;">{% if comment.user == request.user %} You {% elif comment.user == recipe.user %}Author {% else %} {{comment.user.full_name}} {% endif %}</h5>
+                                <small class="text-muted">{{ comment.updated_at|date:"F j, Y, g:i a" }}</small>
+                                <h6 class="mt-1 font-weight-bold" style="margin: 0;">{{ comment.subject }}</h6>
+                                <p class="mb-0" style="margin-top: 5px; color: black;">{{ comment.content }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12">
+                            <p class="text-muted text-center mt-4">No comments yet. Be the first to comment!</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                
+                                
+        </div>
+    </div>
+
+{% endblock body %}

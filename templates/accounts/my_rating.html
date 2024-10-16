@@ -1,0 +1,309 @@
+{% extends "includes/base.html" %}
+
+{% block styles %}
+<style>
+/* Basic styles for layout */
+.myblog-body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+.myblog-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    flex: 1;
+    padding: 20px;
+}
+
+.myblog-sidebar {
+    width: 250px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+}
+
+.myblog-sidebar h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.6em;
+    font-weight: bold;
+}
+
+.myblog-sidebar a {
+    display: block;
+    padding: 12px;
+    margin: 8px 0;
+    background-color: #40ba37;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+    font-weight: 600;
+    text-align: center;
+}
+
+.myblog-sidebar a:hover {
+    background-color: #1c8314;
+    transform: translateY(-2px);
+}
+
+.myblog-content {
+    flex: 1;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.myblog-content h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 2.2em;
+    font-weight: 700;
+}
+
+/* Rating card styles */
+.rating-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #eaeaea;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background-color: #f7f7f7;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rating-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Image styles */
+.rating-card img {
+    width: 150px; /* Set a fixed width */
+    height: 100px; /* Set a fixed height */
+    object-fit: cover; /* Ensures the image fits without distortion */
+    border-radius: 10px; /* Rounds the corners */
+    margin-right: 15px; /* Adds spacing between the image and text */
+}
+
+.rating-content {
+    flex-grow: 1;
+    word-wrap: break-word;
+    max-width: 700px;
+    padding-left: 15px;
+}
+
+.rating-content h5 {
+    margin: 0;
+    font-size: 1.4em;
+    color: #40ba37;
+    font-weight: 700;
+}
+
+.rating-content small {
+    color: #999;
+    display: block;
+    margin-bottom: 5px;
+    font-style: italic;
+}
+
+.rating-content h6 {
+    font-weight: bold;
+    color: #333;
+    margin: 5px 0;
+    font-size: 1.1em;
+}
+
+.rating-content p {
+    margin-top: 5px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.rating-content a {
+    font-size: 0.9em;
+    color: #40ba37;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.rating-content a:hover {
+    color: #1c8314;
+    text-decoration: underline;
+}
+
+.view-button, .delete-button {
+    padding: 10px 15px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.view-button {
+    background-color: #40ba37;
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.view-button:hover {
+    background-color: #1c8314;
+    transform: translateY(-2px);
+}
+
+.delete-button {
+    background-color: #d9534f;
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.delete-button:hover {
+    background-color: #c9302c;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .myblog-container {
+        flex-direction: column;
+    }
+
+    .myblog-sidebar {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.alert-info {
+    background-color: #d9edf7;
+    color: #31708f;
+}
+
+.alert-warning {
+    background-color: #fcf8e3;
+    color: #8a6d3b;
+}
+
+.alert-error {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+#message-container {
+    transition: opacity 3s ease-out;
+}
+
+.rating-star ul {
+    padding: 0;
+    list-style: none;
+}
+
+.rating-star .fa-star {
+    font-size: 20px; /* Adjust the size as needed (e.g., 30px for larger stars) */
+    color: gold; /* Color for filled stars */
+}
+
+.rating-star .fa-star-o {
+    font-size: 20px; /* Ensure the unfilled stars are the same size */
+    color: lightgray; /* Color for unfilled stars */
+}
+
+.rating-star .fa-star-half-o {
+    font-size: 20px; /* Size for half-filled stars */
+    color: gold; /* Same color for half-filled stars */
+}
+
+</style>
+{% endblock styles %}
+
+{% block body %}
+<div class="myblog-container">
+    {% include "accounts/includes/sidebar.html" %}
+
+    <div class="myblog-content">
+        <h2>My Ratings</h2>
+        {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <hr class="w-50">
+        {% if user_ratings %}
+            {% for rating in user_ratings %}
+            <div class="rating-card">
+                <img src="{{ rating.recipe.image.url }}" alt="{{ rating.recipe.title }} Image">
+                <div class="rating-content">
+                    <h5>{{ rating.recipe.title }}</h5>
+                    <div class="rating-star">
+                        <span>
+                            <ul class="list-inline">
+                                <li class="fa fa-star{% if rating and rating.rate < 0.5 %}-o{% elif rating and rating.rate >= 0.5 and rating.rate < 1 %}-half-o {% endif %}"></li>
+                                <li class="fa fa-star{% if rating and rating.rate < 1.5 %}-o{% elif rating and rating.rate >= 1.5 and rating.rate < 2 %}-half-o {% endif %}"></li>
+                                <li class="fa fa-star{% if rating and rating.rate < 2.5 %}-o{% elif rating and rating.rate >= 2.5 and rating.rate < 3 %}-half-o {% endif %}"></li>
+                                <li class="fa fa-star{% if rating and rating.rate < 3.5 %}-o{% elif rating and rating.rate >= 3.5 and rating.rate < 4 %}-half-o {% endif %}"></li>
+                                <li class="fa fa-star{% if rating and rating.rate < 4.5 %}-o{% elif rating and rating.rate >= 4.5 and rating.rate < 5 %}-half-o {% endif %}"></li>
+                            </ul>
+                            
+                        </span>
+                    </div>
+                    <h6>Rating: {{ rating.rate }} / 5</h6>
+                    <small>Rated on: {{ rating.updated_at }}</small>
+                    
+                    <a href="{% url 'recipe_detail' rating.recipe.id %}" class="view-button">View Recipe</a>
+<a class="delete-button">Delete Rating</a>
+
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>You have not rated any recipes yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock body %}
+
+{% block jslinks %}
+<script>
+    setTimeout(function() {
+        var messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+            messageContainer.style.opacity = '0';
+            setTimeout(function() {
+                messageContainer.style.display = 'none';
+            }, 1000);
+        }
+    }, 3000);
+</script>
+{% endblock jslinks %}

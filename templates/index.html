@@ -1,0 +1,247 @@
+{% extends "includes/base.html" %}
+{% load static %}
+{% block styles %}
+<style>
+/* Ensure images have a fixed size and maintain their aspect ratio */
+.single-top-catagory img {
+    width: 100%; /* Make the image take up the full width of its container */
+    height: 300px; /* Set a fixed height */
+    object-fit: cover; /* Ensures the image scales properly and covers the entire area without distortion */
+    border-radius: 8px; /* Add some rounding to match the style */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional styling */
+}
+
+/* Add some padding around each category section */
+.single-top-catagory {
+    margin-bottom: 20px; /* Add some space between each category */
+    position: relative;
+}
+
+.top-cta-content {
+    position: absolute;
+    bottom: 20px; /* Adjusts the positioning of the text */
+    left: 20px;
+    color: white; /* Ensure text is visible on top of the image */
+    z-index: 2; /* Keep text in front of the image */
+}
+
+.single-best-receipe-area img {
+    width: 100%; /* Ensures the image takes full width of its container */
+    height: 250px; /* Set a fixed height for the images */
+    object-fit: cover; /* This will crop the image to fit the container without stretching */
+    border-radius: 10px; /* Optional: rounded corners for images */
+}
+.receipe-thumb {
+    width: 100px;  /* Set a fixed width */
+    height: 100px; /* Set a fixed height */
+    overflow: hidden; /* Hide overflow to ensure image fits */
+    border-radius: 5px; /* Optional: Add a border radius */
+}
+
+.receipe-thumb img {
+    width: 100%; /* Make sure the image fills the container's width */
+    height: 100%; /* Make sure the image fills the container's height */
+    object-fit: cover; /* Ensure the image is scaled to cover the container */
+}
+
+</style>
+
+{% endblock styles %}
+{% block body %}
+    <!-- ##### Hero Area Start ##### -->
+<section class="hero-area">
+    <div class="hero-slides owl-carousel">
+        <!-- Single Hero Slide -->
+        <div class="single-hero-slide bg-img" style="background-image: url({% static "img/bg-img/bg1.jpg" %});">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                        <div class="hero-slides-content" data-animation="fadeInUp" data-delay="100ms">
+                            <!-- Change the title here -->
+                            <h2 data-animation="fadeInUp" data-delay="300ms">Welcome to Our Food Paradise</h2>
+                            <!-- Change the description here -->
+                            <p data-animation="fadeInUp" data-delay="700ms">Discover a variety of delicious recipes and cooking tips. Explore our exclusive content to enhance your culinary experience!</p>
+                            <!-- Keep the "See All Recipe" button unchanged -->
+                            <a href="{% url 'recipe_list' %}" class="btn delicious-btn" data-animation="fadeInUp" data-delay="1000ms">See All Recipes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Single Hero Slide -->
+        <div class="single-hero-slide bg-img" style="background-image: url({% static "img/bg-img/bg6.jpg" %});">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                        <div class="hero-slides-content" data-animation="fadeInUp" data-delay="100ms">
+                            <!-- Change the title here -->
+                            <h2 data-animation="fadeInUp" data-delay="300ms">Join Our Cooking Classes</h2>
+                            <!-- Change the description here -->
+                            <p data-animation="fadeInUp" data-delay="700ms">Sign up for our interactive cooking classes to learn from top chefs and elevate your cooking skills.</p>
+                            <!-- Keep the "See All Recipe" button unchanged -->
+                            <a href="{% url 'recipe_list' %}" class="btn delicious-btn" data-animation="fadeInUp" data-delay="1000ms">See All Recipes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Single Hero Slide -->
+        <div class="single-hero-slide bg-img" style="background-image: url({% static "img/bg-img/bg7.jpg" %});">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                        <div class="hero-slides-content" data-animation="fadeInUp" data-delay="100ms">
+                            <!-- Change the title here -->
+                            <h2 data-animation="fadeInUp" data-delay="300ms">Explore Our Latest Food Trends</h2>
+                            <!-- Change the description here -->
+                            <p data-animation="fadeInUp" data-delay="700ms">Stay up-to-date with the latest trends in the food industry, from healthy eating to fusion cuisine, and more!</p>
+                            <!-- Keep the "See All Recipe" button unchanged -->
+                            <a href="{% url 'recipe_list' %}" class="btn delicious-btn" data-animation="fadeInUp" data-delay="1000ms">See All Recipes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### Hero Area End ##### -->
+
+
+    <!-- ##### Top Catagory Area Start ##### -->
+    <section class="top-catagory-area section-padding-80-0">
+        <div class="container">
+            <div class="row">
+                <!-- Top Catagory Area -->
+                 {% for category in categories %}
+                 <div class="col-12 col-lg-6">
+                    <div class="single-top-catagory">
+                        <img src="{{category.image.url}}" alt="">
+                        <!-- Content -->
+                        <div class="top-cta-content">
+                            <h3>{{category.category_name}}</h3>
+                            <h6>{{category.description}}</h6>
+                            <a href="{% url "category_filter" category.category_name %}" class="btn delicious-btn">See Full Receipies</a>
+                        </div>
+                    </div>
+                </div>
+                 {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- ##### Top Catagory Area End ##### -->
+     <br><br>
+
+    <!-- ##### Best Receipe Area Start ##### -->
+    <section class="best-receipe-area">
+        <div class="container">
+            <div class="row mb-0">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>The Best Rated Receipies</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Single Best Receipe Area -->
+                 {% for top_recipe in top_recipies %}
+                 <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-best-receipe-area mb-30">
+                        <img src="{{top_recipe.image.url}}" alt="">
+                        <div class="receipe-content">
+                            <a href="{% url "recipe_detail" top_recipe.id %}">
+                                <h5>{{top_recipe.title}}</h5>
+                            </a>
+                            <div class="ratings">
+                                <!-- First Star -->
+                                <i class="fa fa-star{% if top_recipe.rating_avg < 0.5 %}-o{% elif top_recipe.rating_avg >= 0.5 and top_recipe.rating_avg < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                <!-- Second Star -->
+                                <i class="fa fa-star{% if top_recipe.rating_avg < 1.5 %}-o{% elif top_recipe.rating_avg >= 1.5 and top_recipe.rating_avg < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                <!-- Third Star -->
+                                <i class="fa fa-star{% if top_recipe.rating_avg < 2.5 %}-o{% elif top_recipe.rating_avg >= 2.5 and top_recipe.rating_avg < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                <!-- Fourth Star -->
+                                <i class="fa fa-star{% if top_recipe.rating_avg < 3.5 %}-o{% elif top_recipe.rating_avg >= 3.5 and top_recipe.rating_avg < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                <!-- Fifth Star -->
+                                <i class="fa fa-star{% if top_recipe.rating_avg < 4.5 %}-o{% elif top_recipe.rating_avg >= 4.5 and top_recipe.rating_avg < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                 {% endfor %}
+                
+            </div>
+        </div>
+    </section>
+    <!-- ##### Best Receipe Area End ##### -->
+
+    <!-- ##### CTA Area Start ##### -->
+    <!-- ##### CTA Area Start ##### -->
+<!-- ##### CTA Area Start ##### -->
+<!-- ##### CTA Area Start ##### -->
+<section class="cta-area bg-img bg-overlay" style="background-image: url({% static "img/bg-img/bg4.jpg" %});">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="cta-content text-center">
+                    <h2>Gluten-Free Choices</h2>
+                    <p>While we currently lack dedicated gluten-free recipes, our dishes can be tailored to your preferences. Learn more about gluten-free cooking!</p>
+                    <a href="{% url "gluten_free" %}" class="btn delicious-btn">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### CTA Area End ##### -->
+
+<!-- ##### CTA Area End ##### -->
+
+<!-- ##### CTA Area End ##### -->
+
+    <!-- ##### CTA Area End ##### -->
+
+    <!-- ##### Small Receipe Area Start ##### -->
+    <section class="small-receipe-area section-padding-80-0">
+        <div class="container">
+            <h3 class="text-bg-info mb-5 text-center">Newest Recipies</h3>
+            <div class="row">
+
+                <!-- Small Recipe Area -->
+{% for new_recipe in new_recipies %}
+<div class="col-12 col-sm-6 col-lg-4">
+    <div class="single-small-receipe-area d-flex">
+        <!-- Recipe Thumb -->
+        <div class="receipe-thumb">
+            <img src="{{ new_recipe.image.url }}" alt="">
+        </div>
+        <!-- Recipe Content -->
+        <div class="receipe-content">
+            <span>{{ new_recipe.created_at }}</span>
+            <a href="{% url "recipe_detail" new_recipe.id %}">
+                <h5>{{ new_recipe.title }}</h5>
+            </a>
+            <div class="ratings">
+                <!-- First Star -->
+                <i class="fa fa-star{% if new_recipe.rating_avg < 0.5 %}-o{% elif new_recipe.rating_avg >= 0.5 and new_recipe.rating_avg < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                <!-- Second Star -->
+                <i class="fa fa-star{% if new_recipe.rating_avg < 1.5 %}-o{% elif new_recipe.rating_avg >= 1.5 and new_recipe.rating_avg < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                <!-- Third Star -->
+                <i class="fa fa-star{% if new_recipe.rating_avg < 2.5 %}-o{% elif new_recipe.rating_avg >= 2.5 and new_recipe.rating_avg < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                <!-- Fourth Star -->
+                <i class="fa fa-star{% if new_recipe.rating_avg < 3.5 %}-o{% elif new_recipe.rating_avg >= 3.5 and new_recipe.rating_avg < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                <!-- Fifth Star -->
+                <i class="fa fa-star{% if new_recipe.rating_avg < 4.5 %}-o{% elif new_recipe.rating_avg >= 4.5 and new_recipe.rating_avg < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+            </div>
+            <p>{{ new_recipe.comment_count }} Comments</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+            </div>
+        </div>
+    </section>
+    {% endblock body %}

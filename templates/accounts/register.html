@@ -1,0 +1,279 @@
+{% extends "includes/base.html" %}
+{% load static %}
+{% block styles %}
+
+<style>
+    /* Custom styling for Gender section */
+    .gender-selection {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .gender-selection label {
+        font-weight: bold;
+        margin-right: 15px;
+    }
+
+    .custom-radio {
+        position: relative;
+        margin-right: 20px;
+        cursor: pointer;
+    }
+
+    .custom-radio input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .custom-radio span {
+        position: relative;
+        padding-left: 30px;
+        cursor: pointer;
+    }
+
+    .custom-radio span::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #40ba37;
+        border-radius: 50%;
+        background-color: transparent;
+    }
+
+    .custom-radio input:checked + span::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        width: 10px;
+        height: 10px;
+        background-color: #40ba37;
+        border-radius: 50%;
+    }
+
+    /* Custom styling for file upload */
+    .custom-file-upload {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .custom-file-upload input[type="file"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .custom-file-upload .upload-btn {
+        background-color: #40ba37;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .custom-file-upload .upload-btn:hover {
+        background-color: #1c8314;
+    }
+
+    /* General input field styles */
+    .form-control {
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .custom-file-upload-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .custom-file-upload-container label {
+        margin-right: 15px; /* Space between label and button */
+    }
+
+    .error {
+        color: red;
+        margin-top: -15px;
+        margin-bottom: 10px;
+        font-size: 12px;
+    }
+</style>
+
+{% endblock styles %}
+
+{% block body %}
+
+   <!-- Registration Form Section -->
+   <section class="registration-form-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading text-left">
+                    <h3>Register</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="contact-form-area">
+                    <form action="{% url 'register' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Form-level error messages (like password mismatch) -->
+                        {% if form.non_field_errors %}
+                            <div class="error">{{ form.non_field_errors.0 }}</div>
+                        {% endif %}
+                        <div class="row">
+                            <!-- First Name -->
+                            <div class="col-12 col-lg-6">
+                                <input type="text" class="form-control" name="first_name" placeholder="First Name" value="{{ form.first_name.value|default:'' }}">
+                                {% if form.last_name.errors %}
+                                    <div class="error">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="col-12 col-lg-6">
+                                <input type="text" class="form-control" name="last_name" placeholder="Last Name" value="{{ form.last_name.value|default:'' }}">
+                                {% if form.last_name.errors %}
+                                    <div class="error">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-12 col-lg-6">
+                                <input type="email" class="form-control" name="email" placeholder="Email" value="{{ form.email.value|default:'' }}">
+                                {% if form.email.errors %}
+                                    <div class="error">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-12 col-lg-6">
+                                <input type="tel" class="form-control" name="phone_number" placeholder="Phone Number" value="{{ form.phone_number.value|default:'' }}">
+                                {% if form.phone_number.errors %}
+                                    <div class="error">{{ form.phone_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-12 col-lg-6">
+                                <input type="password" class="form-control" name="password" placeholder="Password">
+                                {% if form.password.errors %}
+                                    <div class="error">{{ form.password.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="col-12 col-lg-6">
+                                <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password">
+                                {% if form.confirm_password.errors %}
+                                    <div class="error">{{ form.confirm_password.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Gender (Styled Radio Buttons) -->
+                            <div class="col-12 col-lg-6">
+                                <label class="form-control-label">Gender:</label>
+                                <div class="gender-selection">
+                                    {% for choice in form.gender %}
+                                        <label class="custom-radio">
+                                            {{ choice.tag }}
+                                            <span>{{ choice.choice_label }}</span>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                                {% if form.gender.errors %}
+                                    <div class="error">{{ form.gender.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Photo Upload (Label to the Left of Button) -->
+                            <!-- Photo Upload (Label to the Left of Button) -->
+                            <div class="col-12 col-lg-6">
+                                <div class="custom-file-upload-container">
+                                    <label for="photo" class="form-control-label">Upload Photo:</label>
+                                    <div class="custom-file-upload">
+                                        <button class="upload-btn" type="button" id="uploadBtn" onclick="document.getElementById('photo').click();">Choose File</button>
+                                        <input type="file" id="photo" name="photo" accept="image/*" style="display: none;" onchange="updateFileName()">
+                                        <span id="fileName" style="margin-left: 10px; font-weight: bold;"></span>
+                                        <button type="button" id="clearBtn" class="btn btn-danger" style="display: none; margin-left: 10px; width: 30px; height: 30px; border-radius: 50%; align-items: center; justify-content: center" onclick="clearFile()">&times;</button>
+                                    </div>
+                                </div>
+                                {% if form.photo.errors %}
+                                    <div class="error">{{ form.photo.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            
+                            <!-- Submit Button -->
+                            <div class="col-12">
+                                <button class="btn delicious-btn mt-30" type="submit">Register</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="already-have-account text-center mt-4">
+                        <p>Already have an account? <a href="{% url "login" %}">Log in here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock body %}
+
+{% block jslinks %}
+<script>
+    function updateFileName() {
+        const fileInput = document.getElementById('photo');
+        const fileNameDisplay = document.getElementById('fileName');
+        const clearBtn = document.getElementById('clearBtn');
+        
+        // Get the file name and update the display
+        if (fileInput.files.length > 0) {
+            fileNameDisplay.textContent = fileInput.files[0].name;
+            clearBtn.style.display = 'inline-block';  // Show the clear button
+            fileInput.setAttribute('required', 'required');  // Make it required
+        } else {
+            fileNameDisplay.textContent = '';  // Clear if no file is selected
+            clearBtn.style.display = 'none';  // Hide the clear button
+            fileInput.removeAttribute('required');  // Remove the required attribute
+        }
+    }
+
+    function clearFile() {
+        const fileInput = document.getElementById('photo');
+        const fileNameDisplay = document.getElementById('fileName');
+        const clearBtn = document.getElementById('clearBtn');
+        
+        // Clear the file input and display
+        fileInput.value = '';  // Reset the input
+        fileNameDisplay.textContent = '';  // Clear the displayed file name
+        clearBtn.style.display = 'none';  // Hide the clear button
+        fileInput.removeAttribute('required');  // Remove the required attribute
+    }
+</script>
+
+
+
+
+
+{% endblock jslinks %}
+
+

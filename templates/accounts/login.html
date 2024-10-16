@@ -1,0 +1,94 @@
+{% extends "includes/base.html" %}
+{% load static %}
+{% block styles %}
+
+<style>
+    .forgot-password-link {
+        color: #007bff; /* Change this to your desired color */
+        font-weight: bold; /* Make the text bold */
+    }
+
+    .forgot-password-link:hover {
+        text-decoration: underline; /* Underline on hover */
+    }
+
+    .signup-link {
+        color: #007bff; /* Change this to your desired color */
+        font-weight: bold; /* Make the text bold */
+    }
+
+    .signup-link:hover {
+        text-decoration: underline; /* Underline on hover */
+    }
+
+    .error-message {
+        color: red;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+</style>
+
+{% endblock styles %}
+
+{% block body %}
+
+<!-- Login Form (Styled Like 'Leave a comment' Section) -->
+<div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+        <div class="section-heading text-center">
+            <h3>Login</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+        <div class="contact-form-area">
+
+            <!-- Display messages (error, success, etc.) -->
+            <div class="container">
+                {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <p class="alert alert-success">{{ message }}</p>
+                {% elif message.tags == 'error' %}
+                    <p class="alert alert-danger">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+            </div>
+
+            <form action="{% url 'login' %}" method="post">
+              {% csrf_token %}
+                <div class="row">
+                    <!-- Email Input -->
+                    <div class="col-12 mb-3">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="E-mail" required>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="col-12 mb-3">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <!-- Forgot Password Link -->
+                    <div class="col-12 mb-3 text-end">
+                        <a href="{% url "reset_password" %}" class="text-decoration-none forgot-password-link">Forgot Password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12">
+                        <button class="btn delicious-btn mt-3" type="submit">Login</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Sign Up Section -->
+            <div class="text-center mt-3">
+                <p>Don't have an account? <a href="{% url "register" %}" class="signup-link">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}
